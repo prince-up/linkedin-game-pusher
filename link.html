@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LinkedIn Networking Tycoon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f3f6f8;
+        }
+        .game-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #0077b5;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #005582; }
+        #stats, #story { margin: 15px 0; }
+        #stats { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>LinkedIn Networking Tycoon</h1>
+        <p>Build your career from intern to CEO!</p>
+        <div id="stats">Reputation: 10 | Skills: 5 | Connections: 3</div>
+        <div id="story">You're a new intern. What's your next move?</div>
+        <div id="choices"></div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                id: 0,
+                text: "You're a new intern. What's your next move?",
+                choices: [
+                    { text: "Network at a conference (+Connections)", next: 1, stats: { connections: +2 } },
+                    { text: "Take an online course (+Skills)", next: 2, stats: { skills: +3 } },
+                    { text: "Ask for a promotion (+Reputation)", next: 3, stats: { reputation: +1 } }
+                ]
+            },
+            {
+                id: 1,
+                text: "You met 2 industry pros! Now what?",
+                choices: [
+                    { text: "Follow up with a LinkedIn message (+Reputation)", next: 4, stats: { reputation: +2 } },
+                    { text: "Ignore them and focus on work (-Connections)", next: 5, stats: { connections: -1 } }
+                ]
+            },
+            {
+                id: 2,
+                text: "You learned Python! Your boss notices.",
+                choices: [
+                    { text: "Volunteer for a project (+Reputation, +Skills)", next: 6, stats: { reputation: +1, skills: +2 } },
+                    { text: "Demand a raise (-Reputation)", next: 7, stats: { reputation: -2 } }
+                ]
+            },
+            // Add more scenarios...
+            {
+                id: 99,
+                text: "🏆 You became CEO! Share your victory on LinkedIn!",
+                choices: []
+            }
+        ];
+
+        let state = { reputation: 10, skills: 5, connections: 3 };
+        let currentScenario = 0;
+
+        function updateGame() {
+            const scenario = scenarios.find(s => s.id === currentScenario);
+            document.getElementById("story").textContent = scenario.text;
+            document.getElementById("stats").textContent = 
+                `Reputation: ${state.reputation} | Skills: ${state.skills} | Connections: ${state.connections}`;
+
+            const choicesEl = document.getElementById("choices");
+            choicesEl.innerHTML = "";
+
+            scenario.choices.forEach(choice => {
+                const button = document.createElement("button");
+                button.textContent = choice.text;
+                button.onclick = () => makeChoice(choice);
+                choicesEl.appendChild(button);
+            });
+
+            if (scenario.choices.length === 0) {
+                choicesEl.innerHTML = "<button onclick='location.reload()'>Play Again</button>";
+            }
+        }
+
+        function makeChoice(choice) {
+            Object.keys(choice.stats).forEach(stat => {
+                state[stat] += choice.stats[stat];
+            });
+            currentScenario = choice.next;
+            updateGame();
+        }
+
+        updateGame();
+    </script>
+</body>
+</html>

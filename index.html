@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LinkedIn Career Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background: #f3f6f8;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #0077b5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #005582;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>LinkedIn Career Quiz</h1>
+        <p>Test your business knowledge!</p>
+        <div id="question"></div>
+        <div id="options"></div>
+        <div id="result"></div>
+        <button id="next-btn" style="display: none;">Next Question</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Which skill is most in-demand for 2025?",
+                options: ["Artificial Intelligence", "Blockchain", "Emotional Intelligence"],
+                answer: 2
+            },
+            {
+                question: "What is the 'Rule of 72' used for?",
+                options: ["Calculating ROI", "Estimating doubling time for investments", "Measuring team productivity"],
+                answer: 1
+            },
+            {
+                question: "Which company pioneered the 'Agile Methodology'?",
+                options: ["Microsoft", "Google", "Toyota"],
+                answer: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionEl = document.getElementById("question");
+            const optionsEl = document.getElementById("options");
+            const resultEl = document.getElementById("result");
+            
+            questionEl.textContent = questions[currentQuestion].question;
+            optionsEl.innerHTML = "";
+            resultEl.textContent = "";
+            document.getElementById("next-btn").style.display = "none";
+
+            questions[currentQuestion].options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => checkAnswer(index);
+                optionsEl.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const correctIndex = questions[currentQuestion].answer;
+            const resultEl = document.getElementById("result");
+            
+            if (selectedIndex === correctIndex) {
+                resultEl.textContent = "✅ Correct!";
+                score++;
+            } else {
+                resultEl.textContent = "❌ Wrong! The correct answer was: " + questions[currentQuestion].options[correctIndex];
+            }
+
+            document.getElementById("next-btn").style.display = "block";
+        }
+
+        document.getElementById("next-btn").onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                document.getElementById("question").textContent = `Quiz Complete! Your score: ${score}/${questions.length}`;
+                document.getElementById("options").innerHTML = "";
+                document.getElementById("next-btn").style.display = "none";
+                document.getElementById("result").textContent = "Thanks for playing! Share your score in the comments.";
+            }
+        };
+
+        loadQuestion();
+    </script>
+</body>
+</html>
